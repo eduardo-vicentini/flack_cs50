@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    font-family: Helvetica, sans-serif, Arial;
+    font-weight: 400;
+    box-sizing: border-box;
+    border: none;
+}
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
+    75% {
+        opacity: 0;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;
+        line-height: 0px;
+        padding: 0px;
+        margin-bottom: 0px;
+    }
+}
+
+.hide  {
+    float: right;
+}
+
+.post {
+    background-color: #77dd11;
+    padding: 20px;
+    margin-bottom: 10px;
+    animation-name: hide;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(12);
+    width: 100%;
+}
+.header {
+    grid-column: span 12;
+    background-color: black;
+    height: 100px;
+    width: 100%;
+    color: cornsilk;
+}
+
+form button {
+    border-style: solid;
+    padding: 5px;
+    margin-top: 10px;   
+}
+
+button:hover {
+    background-color: white;
+    cursor: pointer;
+}
+
+#left {
+    float: left;
+    padding: 40px;
+}
+
+#right {
+    float: right;
+    padding: 40px;
+}
+
+.navigation-menu {
+    grid-column: span 2;
+}
+
+.main-content {
+    grid-column: span 10;
+    min-height: calc(100vh - 200px);
+}
+
+.footer {
+    grid-column: span 12;
+    height: 100px;
+    background-color: black;
+    color: cornsilk;
+}
+
+input {
+    width: 50%;
+    border-radius: 2px; 
+    border-style: solid;
+    padding: 15px 10px;
+    margin-top: 10px;
+    float: right;
+}
+
+input[type="text"] {
+    width: 85%; 
+    float: right;; 
+    padding: 15px 10px; 
+    border-radius:5px 5px 5px 5px; 
+    border-style: solid;
+}
+
+form {
+    width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+    .navigation-menu {
+      grid-column: span 6;
+    }
+    .main-content {
+      grid-column: span 6;
+    }
+  }
+@media screen and (max-width: 480px) {
+    .navigation-menu {
+      grid-column: span 12;
+    }
+    .main-content {
+      grid-column: span 12;
+    }
+}

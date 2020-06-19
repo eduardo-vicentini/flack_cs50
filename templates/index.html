@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='css/mainpage.css') }}">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+
+    <script id="post" type="text/x-handlebars-template">
+      <div class="post">
+          {% raw -%}
+              {{ contents }}
+          {%- endraw %}
+          <button class="hide">Hide</button>
+      </div>
+    </script>
+    <title>CS50 Chat</title>
+</head>
+
+<body>
+
+    <div class="container">
+      <div class="header">
+          <div id="left">Left</div>
+          <div id="right">
+            <span id="username"></span> <span id="delete" class="show-if-username"><button id="deleteButton">delete</button></span>
+          </div>
+      </div>
+      <div class="navigation-menu">
+          
+        <form id="formUsername" class="hide-if-username">
+            <input id="setUsername" type="text" placeholder="Select a nickname" autofocus autocomplete="off">
+            
+            <input id="submitUsername" type="submit" disabled>
+        </form>
+
+        <form id="formNewChannel" class="show-if-username">
+            <input id="setChannel" name="newChannel" type="text" placeholder="Create a new Channel" autofocus autocomplete="off">
+            <input id="submitNewChannel" type="submit" disabled>
+        </form>
+
+      </div>
+      <div class="main-content">
+       
+        <div id="posts" class="show-if-username"></div>
+
+      </div>
+      <div class="footer">
+        <div id="left">Left</div>
+        <div id="right">Right</div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/mainpage.js') }}"></script>
+</body>
+
+
+</html>
