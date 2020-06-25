@@ -80,6 +80,8 @@ document.addEventListener('click', event => {
         });
     }
 });
+// ---------------------------------------------------------
+
 
 // Add a new channel with given contents to DOM.
 // Load next set of posts.
@@ -99,10 +101,11 @@ function load() {
 
     // Send request.
     request.send(data);
+    return false;
 }
 
 // Add a new post with given contents to DOM.
-const post_template = Handlebars.compile(document.querySelector('#post').innerHTML);
+var post_template = Handlebars.compile(document.querySelector('#post').innerHTML);
 function add_post(contents) {
 
     // Create new post.
@@ -113,42 +116,35 @@ function add_post(contents) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector("#formNewChannel").onsubmit = () => {
-        // Open new request to get new posts.
-        const request = new XMLHttpRequest();
-        const channel = document.getElementById("setChannel").value;
 
-        request.open("POST", "/newchannel");
+    // First load
+    checkUsername();
+    load();
 
-        // Callback function
-        
-        request.onload = () => {
-            const data = JSON.parse(request.responseText);
-            add_post(data);        
-        }
+    // Connect to websocket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-        // Add data to send with request
-        const data = new FormData();
-        data.append('channel', channel);
+    // When connected, configure buttons
+    socket.on('connect', () => {
 
-        // Send request
-        request.send(data);
+        document.querySelector("#formNewChannel").onclick = () => {
+            const channel = document.getElementById("setChannel").value;
+            socket.emit('new channel', {'channel': channel});
+            
+            document.getElementById("setChannel").value = '';
+            return false;
+        };
+    });
 
-        document.getElementById("setChannel").value = '';
-
-        return false;
-    };
+    // When a new vote is announced, add to the unordered list
+    socket.on('created channel', data => {
+        add_post(data.name);
+    });
 });
+
 /* 
 TODO ------------------------------------------------------------
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 */
 
-document.addEventListener('DOMContentLoaded', () => {
-
-    checkUsername();
-    load();
-    return false;
-
-});

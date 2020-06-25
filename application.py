@@ -14,25 +14,28 @@ channels = {}
 def index():
     return render_template("index.html")
 
+def has_channel(name):
 
-@app.route("/newchannel", methods=["POST"])
-def newchannel():
-    # Get start and end point for channels to generate.
-    channel = request.form.get("channel")
-    # Generate list of channels.
-    channels[channel] = []
-    # Return list of posts.
-    return jsonify([channel])
+    if name in channels.keys():
+        return True
+    else:
+        return False
+
+
 
 @app.route("/listchannels", methods=["POST"])
 def listchannels():
     listchannels = [i for i in channels.keys()]
     return jsonify(listchannels)
 
-@socketio.on("submit vote")
-def vote(data):
-    selection = data["selection"]
-    votes[selection] += 1
-    emit("vote totals", votes, broadcast=True)
+@socketio.on("new channel")
+def newchannel(data):
+    name = data["channel"]
+
+    if has_channel(name):
+        emit("not created channel", {"name": "Channel Name Already in Use"}, broadcast=False)
+    else:
+        channels[name] = []
+        emit("created channel", {"name": name}, broadcast=True)
 
 
