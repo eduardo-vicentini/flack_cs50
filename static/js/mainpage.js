@@ -104,15 +104,21 @@ function load() {
     return false;
 }
 
-// Add a new post with given contents to DOM.
-var post_template = Handlebars.compile(document.querySelector('#post').innerHTML);
-function add_post(contents) {
+// Add a new channel with given contents to DOM.
+var channel_template = Handlebars.compile(document.querySelector('#channels').innerHTML);
+function add_post(name) {
 
-    // Create new post.
-    const post = post_template({'contents': contents});
+    // Create new channel.
+    const channel = channel_template({'': name});
 
-    // Add post to DOM.
-    document.querySelector('#posts').innerHTML += post;
+    // Create anchor
+    let a = document.createElement('a');
+    a.href = "/channel/" + name;
+
+    a.innerHTML = name
+    // Add channel to DOM.
+    document.querySelector('#channels').innerHTML += a.innerHTML + "<br>";
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {

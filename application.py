@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
+# MAYBE USE FLASK SESSION
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -28,6 +29,7 @@ def listchannels():
     listchannels = [i for i in channels.keys()]
     return jsonify(listchannels)
 
+
 @socketio.on("new channel")
 def newchannel(data):
     name = data["channel"]
@@ -38,4 +40,12 @@ def newchannel(data):
         channels[name] = []
         emit("created channel", {"name": name}, broadcast=True)
 
+
+@app.route("/channel/<name>", methods=["GET", "POST"])
+def channel_message(name):
+    if request.method == "GET":
+        pass
+
+    else:
+        pass
 
