@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='css/mainpage.css') }}">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+
+ 
+    </script>
+    <title>{% block title%}{% endblock %}</title>
+</head>
+
+<body>
+
+    <div class="container">
+      <div class="header">
+          <div id="left"><a href="/">Home</a></div>
+          <div id="right">
+            <span id="username"></span> <span id="delete" class="show-if-username"><button id="deleteButton">delete</button></span>
+          </div>
+      </div>
+      {% block main %} {% endblock %}
+      <div class="footer">
+        <div id="left">Left</div>
+        <div id="right">Right</div>
+      </div>
+    </div>
+
+
+</body>
+
+
+</html>

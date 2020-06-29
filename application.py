@@ -8,6 +8,25 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
+class Channel:
+
+    def __init__(self, username, name):
+        self.name = name
+        self.username = username 
+        self.messages = []
+
+    def __str__(self):
+        return f"Channel {self.name} created by {self.username}"
+
+class Message:
+
+    def __init__(self, username, text):
+        self.username = username
+        self.text = text
+
+    def __str__(self):
+        return f"{text} by {username}"
+
 # Channels dictionary
 channels = {}
 
@@ -18,6 +37,12 @@ def index():
 def has_channel(name):
 
     if name in channels.keys():
+        return True
+    else:
+        return False
+
+def limit(array):
+    if len(array) >= 100:
         return True
     else:
         return False
@@ -33,19 +58,52 @@ def listchannels():
 @socketio.on("new channel")
 def newchannel(data):
     name = data["channel"]
+    username = data["username"]
 
     if has_channel(name):
         emit("not created channel", {"name": "Channel Name Already in Use"}, broadcast=False)
     else:
-        channels[name] = []
+        if limit(channels.keys()):
+            del channels[channels.keys()[0]]
+
+        channels[name] = Channel(username, name)
+        
         emit("created channel", {"name": name}, broadcast=True)
+
 
 
 @app.route("/channel/<name>", methods=["GET", "POST"])
 def channel_message(name):
     if request.method == "GET":
-        pass
+
+        return render_template("channel.html", name=name)
 
     else:
         pass
 
+@app.route("/listmessages/<name>", methods=["POST"])
+def listmessages(name):
+    channel = channels[name]
+
+    data = []
+    for i in channel.messages:
+        message, username = (i.text, i.username)
+        data.append({"message": message, "username": username})
+    
+    return jsonify(data)
+
+
+@socketio.on("new message")
+def newmessage(data):
+    channelName = data["channel"]
+    message = data["message"]
+    username = data["username"]
+    messages = channels[channelName].messages
+
+    if limit(messages):
+        messages.pop(0)
+
+    messages.append(Message(username, message))
+
+  
+    emit("created message", {"channel": channelName, "message": message, "username": username}, broadcast=True)

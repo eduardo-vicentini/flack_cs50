@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{%block title %} {{ name }} {% endblock %}
+
+{% block main %}
+
+
+<div class="navigation-menu">
+
+    <form id="formNewMessage" class="show-if-username">
+
+        <textarea rows = "10" cols = "60" id="newMessage" name="newMessage" type="text" autofocus autocomplete="off" maxlength="2000">
+            
+        </textarea><br> 
+        <input id="submitMessage" type="submit" disabled>
+    </form>
+
+
+</div>
+
+<div class="main-content">
+    <div id="messages" class="show-if-username"></div>
+</div>
+
+<script src="{{ url_for('static', filename='js/channel.js') }}"></script>
+
+{% endblock %}

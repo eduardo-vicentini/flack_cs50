@@ -36,10 +36,20 @@ body {
     float: right;
 }
 
-.channels {
+.channel {
     background-color: #77dd11;
     padding: 20px;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    animation-name: hide;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}
+
+.message {
+    background-color: #77dd11;
+    padding: 20px;
+    margin-top: 10px;
     animation-name: hide;
     animation-duration: 2s;
     animation-fill-mode: forwards;
@@ -89,6 +99,11 @@ button:hover {
     min-height: calc(100vh - 200px);
 }
 
+.main-content-channel {
+    grid-column: span 12;
+    min-height: calc(100vh - 200px);
+}
+
 .footer {
     grid-column: span 12;
     height: 100px;
@@ -105,16 +120,26 @@ input {
     float: right;
 }
 
-input[type="text"] {
+input[type="text"], textarea {
     width: 85%; 
-    float: right;; 
-    padding: 15px 10px; 
+    float: right; 
+    margin-top: 10px;
     border-radius:5px 5px 5px 5px; 
     border-style: solid;
 }
 
+
+#submitMessage {
+    width: 100px;
+}
+
 form {
     width: 50%;
+}
+
+a {
+    color: cornsilk;
+    text-decoration: none;
 }
 
 @media screen and (max-width: 768px) {

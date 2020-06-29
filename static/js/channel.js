@@ -1,4 +1,6 @@
 
+// Name of the actual channel
+NAME = document.title;
 
 // Button should start disabled and if is empty
 function disable_button(buttom, field) {
@@ -11,16 +13,14 @@ function disable_button(buttom, field) {
     return false;
 }
 
-let setUsername = document.querySelector('#setUsername');
-let submitUsername = document.querySelector('#submitUsername');
-let setChannel = document.querySelector('#setChannel');
-let submitChannel = document.querySelector('#submitNewChannel');
-setUsername.onkeyup = () => {disable_button(submitUsername, setUsername)};
-setChannel.onkeyup = () => {disable_button(submitNewChannel, setChannel)};
+
+var newMessage = document.querySelector('#newMessage');
+var submitMessage = document.querySelector('#submitMessage');
 
 
 function checkUsername() {
     if (localStorage.getItem("username")) {
+        var username = localStorage.getItem("username");
         const itens_hide = document.getElementsByClassName("hide-if-username");
         const itens_show = document.getElementsByClassName("show-if-username");
         for (let i = 0; i < itens_hide.length; i++)
@@ -51,7 +51,7 @@ function checkUsername() {
     }
 }
 
-document.querySelector("#formUsername").onsubmit = () => {
+document.querySelector("#formNewMessage").onsubmit = () => {
     const username = setUsername.value;
     localStorage.setItem('username', username);
     checkUsername();
@@ -83,51 +83,47 @@ document.addEventListener('click', event => {
 // ---------------------------------------------------------
 
 
-// Add a new channel with given contents to DOM.
-// Load next set of posts.
-function load() {
 
-    // Open new request to get new posts.
+function load(name) {
+
+ 
     const request = new XMLHttpRequest();
-    request.open('POST', '/listchannels');
+    request.open('POST', `/listmessages/${name}`);
     
     request.onload = () => {
         const data = JSON.parse(request.responseText);
         data.forEach(add_post);
     };
 
-    // Add start and end points to request data.
+
     const data = new FormData();
 
-    // Send request.
+
     request.send(data);
     return false;
 }
 
 // Add a new channel with given contents to DOM.
-var channel_template = Handlebars.compile('<a href="{{ link }}">{{ name }}</a> <button class="hide">Hide</button><br>');
-function add_post(name) {
+var message_template = Handlebars.compile('<p> {{ message }}</p> <p>posted by: {{ username }}</p><button class="hide">Hide</button><br>');
+function add_post(data) {
 
-    // Create new channel.
     const channelDiv = document.createElement('div');
     channelDiv.className = 'channel';
-    // Create anchor
-    
-    href = "/channel/" + name;
 
-    const channel = channel_template({'link': href,'name': name});
-    channelDiv.innerHTML = channel;
+    const message = message_template({'message': data.message,'username': data.username});
+    channelDiv.innerHTML = message;
   
     // Add channel to DOM.
-    document.querySelector('#channels').append(channelDiv);
+    document.querySelector('#messages').append(channelDiv);
 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // First load
+    newMessage.onkeyup = () => {disable_button(submitMessage, newMessage)};
     checkUsername();
-    load();
+    load(NAME);
 
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -135,19 +131,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // When connected, configure buttons
     socket.on('connect', () => {
 
-        document.querySelector("#formNewChannel").onclick = () => {
-            const channel = document.getElementById("setChannel").value;
-            socket.emit('new channel', {'channel': channel, "username": localStorage.getItem("username")});
+        document.querySelector("#submitMessage").onclick = () => {
+            const message = document.getElementById("newMessage").value;
+            socket.emit('new message', {'message': message, 'username': localStorage.getItem("username"), 'channel': NAME});
             
-            document.getElementById("setChannel").value = '';
-            disable_button(submitNewChannel, setChannel)
+            document.getElementById("newMessage").value = '';
+            disable_button(submitMessage, newMessage)
             return false;
         };
     });
 
     // When a new vote is announced, add to the unordered list
-    socket.on('created channel', data => {
-        add_post(data.name);
+    socket.on('created message', data => {
+        add_post(data);
     });
 });
 
