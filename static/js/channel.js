@@ -5,7 +5,7 @@ NAME = document.title;
 // Button should start disabled and if is empty
 function disable_button(buttom, field) {
 
-    if (field.value.trimLeft().length > 0)
+    if (field.value.trimLeft().trimRight().length > 0)
         buttom.disabled = false;
     else
         buttom.disabled = true;
@@ -52,7 +52,7 @@ function checkUsername() {
 }
 
 document.querySelector("#formNewMessage").onsubmit = () => {
-    const username = setUsername.value;
+    const username = setUsername.value.trimLeft().trimRight();
     localStorage.setItem('username', username);
     checkUsername();
     return false;
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('connect', () => {
 
         document.querySelector("#submitMessage").onclick = () => {
-            const message = document.getElementById("newMessage").value;
+            const message = document.getElementById("newMessage").value.trimLeft().trimRight();
             socket.emit('new message', {'message': message, 'username': localStorage.getItem("username"), 'channel': NAME});
             
             document.getElementById("newMessage").value = '';

@@ -57,8 +57,8 @@ def listchannels():
 
 @socketio.on("new channel")
 def newchannel(data):
-    name = data["channel"]
-    username = data["username"]
+    name = data["channel"].strip()
+    username = data["username"].strip()
 
     if has_channel(name):
         emit("not created channel", {"name": "Channel Name Already in Use"}, broadcast=False)
@@ -96,8 +96,8 @@ def listmessages(name):
 @socketio.on("new message")
 def newmessage(data):
     channelName = data["channel"]
-    message = data["message"]
-    username = data["username"]
+    message = data["message"].strip()
+    username = data["username"].strip()
     messages = channels[channelName].messages
 
     if limit(messages):

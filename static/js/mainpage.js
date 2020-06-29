@@ -3,7 +3,7 @@
 // Button should start disabled and if is empty
 function disable_button(buttom, field) {
 
-    if (field.value.trimLeft().length > 0)
+    if (field.value.trimLeft().trimRight().length > 0)
         buttom.disabled = false;
     else
         buttom.disabled = true;
@@ -52,7 +52,7 @@ function checkUsername() {
 }
 
 document.querySelector("#formUsername").onsubmit = () => {
-    const username = setUsername.value;
+    const username = setUsername.value.trimLeft().trimRight();
     localStorage.setItem('username', username);
     checkUsername();
     return false;
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('connect', () => {
 
         document.querySelector("#formNewChannel").onclick = () => {
-            const channel = document.getElementById("setChannel").value;
+            const channel = document.getElementById("setChannel").value.trimLeft().trimRight();
             socket.emit('new channel', {'channel': channel, "username": localStorage.getItem("username")});
             
             document.getElementById("setChannel").value = '';
