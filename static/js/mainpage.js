@@ -127,6 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // First load
     checkUsername();
+
+    
+    if (localStorage.getItem("redirect") == "true"){
+        window.location.href = localStorage.getItem("closed_url");
+    }
+
     load();
 
     // Connect to websocket
@@ -135,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // When connected, configure buttons
     socket.on('connect', () => {
 
-        document.querySelector("#formNewChannel").onclick = () => {
+        document.querySelector("#formNewChannel").onsubmit = () => {
             const channel = document.getElementById("setChannel").value.trimLeft().trimRight();
             socket.emit('new channel', {'channel': channel, "username": localStorage.getItem("username")});
             
@@ -156,4 +162,3 @@ TODO ------------------------------------------------------------
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 */
-

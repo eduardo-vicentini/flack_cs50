@@ -142,6 +142,7 @@ a {
     text-decoration: none;
 }
 
+
 @media screen and (max-width: 768px) {
     .navigation-menu {
       grid-column: span 6;

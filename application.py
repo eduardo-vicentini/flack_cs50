@@ -3,10 +3,12 @@ import os
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 # MAYBE USE FLASK SESSION
+import time
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
+
 
 class Channel:
 
@@ -20,9 +22,10 @@ class Channel:
 
 class Message:
 
-    def __init__(self, username, text):
+    def __init__(self, username, text, message_date):
         self.username = username
         self.text = text
+        self.message_date = message_date
 
     def __str__(self):
         return f"{text} by {username}"
@@ -32,7 +35,9 @@ channels = {}
 
 @app.route("/")
 def index():
+
     return render_template("index.html")
+
 
 def has_channel(name):
 
@@ -87,8 +92,8 @@ def listmessages(name):
 
     data = []
     for i in channel.messages:
-        message, username = (i.text, i.username)
-        data.append({"message": message, "username": username})
+        
+        data.append({"message": i.text, "username": i.username, 'time': i.message_date})
     
     return jsonify(data)
 
@@ -98,12 +103,18 @@ def newmessage(data):
     channelName = data["channel"]
     message = data["message"].strip()
     username = data["username"].strip()
+    message_date = time.asctime( time.localtime(time.time()) )
+
+
     messages = channels[channelName].messages
+    
 
     if limit(messages):
         messages.pop(0)
 
-    messages.append(Message(username, message))
+    messages.append(Message(username, message, message_date))
 
   
-    emit("created message", {"channel": channelName, "message": message, "username": username}, broadcast=True)
+    emit("created message", {"channel": channelName, "message": message, 
+            "username": username, "time": message_date}, broadcast=True)
+

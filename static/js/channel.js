@@ -104,13 +104,13 @@ function load(name) {
 }
 
 // Add a new channel with given contents to DOM.
-var message_template = Handlebars.compile('<p> {{ message }}</p> <p>posted by: {{ username }}</p><button class="hide">Hide</button><br>');
+var message_template = Handlebars.compile('<p> {{ message }}</p> <p> <small> posted by: {{ username }} at: {{ time }} </small></p><button class="hide">Hide</button><br>');
 function add_post(data) {
 
     const channelDiv = document.createElement('div');
     channelDiv.className = 'channel';
 
-    const message = message_template({'message': data.message,'username': data.username});
+    const message = message_template({'message': data.message, 'username': data.username, 'time': data.time});
     channelDiv.innerHTML = message;
   
     // Add channel to DOM.
@@ -119,6 +119,19 @@ function add_post(data) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    localStorage.setItem("redirect", "true");
+    localStorage.setItem("closed_url", window.location.href);
+
+    document.getElementById("homeButton").onclick = () => {
+        localStorage.setItem("redirect", "false");
+    }
+    
+    window.onpopstate = () => {
+        localStorage.setItem("redirect", "false");
+    }
+
+
 
     // First load
     newMessage.onkeyup = () => {disable_button(submitMessage, newMessage)};
